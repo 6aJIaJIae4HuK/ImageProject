@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.layout.Pane?>
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="sample.Controller" prefWidth="600" prefHeight="600">
+    <rowConstraints>
+        <RowConstraints percentHeight="60.0"/>
+        <RowConstraints percentHeight="20.0"/>
+    </rowConstraints>
+    <columnConstraints>
+        <ColumnConstraints percentWidth="40.0"/>
+        <ColumnConstraints percentWidth="20.0"/>
+        <ColumnConstraints percentWidth="40.0"/>
+    </columnConstraints>
+
+    <Pane GridPane.rowIndex="0" GridPane.columnIndex="0" prefHeight="Infinity" prefWidth="Infinity" fx:id="inputPane">
+        <ImageView GridPane.rowIndex="0" GridPane.columnIndex="0" fx:id="inputImageView" smooth="true"
+         fitHeight="${inputPane.height}" fitWidth="${inputPane.width}"/>
+    </Pane>
+    <VBox GridPane.rowIndex="0" GridPane.columnIndex="1">
+        <TextField fx:id="segmentNumberInput"/>
+        <Label text="Segment number"/>
+        <Button fx:id="segmentButton" text="Run!" onAction="#segmentImage"/>
+    </VBox>
+    <Pane GridPane.rowIndex="0" GridPane.columnIndex="2" prefHeight="Infinity" prefWidth="Infinity" fx:id="outputPane">
+        <ImageView GridPane.rowIndex="0" GridPane.columnIndex="0" fx:id="outputImageView" smooth="true"
+         fitHeight="${outputPane.height}" fitWidth="${outputPane.width}"/>
+    </Pane>
+
+    <TextField GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2" fx:id="imagePath"/>
+    <GridPane GridPane.rowIndex="1" GridPane.columnIndex="2">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="50.0"/>
+            <ColumnConstraints percentWidth="50.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints percentHeight="100.0"/>
+        </rowConstraints>
+
+        <Button GridPane.rowIndex="0" GridPane.columnIndex="0" text="Select image" onAction="#openDialog"/>
+        <Button GridPane.rowIndex="0" GridPane.columnIndex="1" text="Set image" onAction="#selectImage"/>
+    </GridPane>
+</GridPane>
