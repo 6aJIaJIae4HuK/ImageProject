@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.application.Platform;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.*;
@@ -68,75 +66,29 @@ public class TreeSegmentator implements ImageSegmentator {
             size[i] = 1;
         }
 
-        int setNumber = image.length;
+        int curSegmentNumber = image.length;
         for (Edge edge : graph) {
-            if (getParent(edge.from) == getParent(edge.to))
+            if (curSegmentNumber == segmentNumber)
+                break;
+            int from = getParent(edge.from);
+            int to = getParent(edge.to);
+            if (from == to)
                 continue;
-            if (size[getParent(edge.from)] < minSize || size[getParent(edge.to)] < minSize) {
-                unionSets(edge.from, edge.to);
-                setNumber--;
+            if (size[from] < minSize || size[to] < minSize) {
+                unionSets(from, to);
+                curSegmentNumber--;
             }
         }
 
-        Comparator<Integer> setCompare = new Comparator<Integer>() {
-            @Override
-            public int compare(Integer firstSet, Integer secondSet) {
-                if (size[firstSet] != size[secondSet])
-                    return Integer.compare(size[firstSet], size[secondSet]);
-                return Integer.compare(firstSet, secondSet);
-            }
-        };
-
-        tree = new TreeSet[image.length];
-        TreeSet<Integer> sets = new TreeSet<>(setCompare);
-
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                int ind1 = row * width + col;
-                int p1 = getParent(ind1);
-                if (tree[p1] == null) {
-                    tree[p1] = new TreeSet<>(setCompare);
-                    sets.add(p1);
-                }
-                for (int d = 0; d < 4; d++) {
-                    int newRow = row + drow[d];
-                    int newCol = col + dcol[d];
-                    if (0 <= newRow && newRow < height && 0 <= newCol && newCol < width) {
-                        int ind2 = newRow * width + newCol;
-                        int p2 = getParent(ind2);
-                        if (p1 != p2) {
-                            if (tree[p2] == null) {
-                                tree[p2] = new TreeSet<>(setCompare);
-                                sets.add(p2);
-                            }
-                            tree[p1].add(p2);
-                            tree[p2].add(p1);
-                        }
-                    }
-                }
-            }
-        }
-
-        while (setNumber > segmentNumber) {
-            Integer set = sets.pollFirst();
-            Integer adjSet = tree[set].first();
-            List<Integer> setToAdd = new ArrayList<>();
-            for (Integer s : sets) {
-                tree[s].remove(set);
-                if (tree[s].remove(adjSet))
-                    setToAdd.add(s);
-            }
-            sets.remove(adjSet);
-            if (unionSets(set, adjSet))
-                setNumber--;
-            sets.add(adjSet);
-            for (Integer s : setToAdd) {
-                tree[s].add(adjSet);
-            }
-            for (Integer s : tree[set]) {
-                if (s != adjSet)
-                    tree[adjSet].add(s);
-            }
+        for (Edge edge : graph) {
+            if (curSegmentNumber == segmentNumber)
+                break;
+            int from = getParent(edge.from);
+            int to = getParent(edge.to);
+            if (from == to)
+                continue;
+            unionSets(from, to);
+            curSegmentNumber--;
         }
 
         for (int ind = 0; ind < image.length; ind++)
@@ -197,22 +149,6 @@ public class TreeSegmentator implements ImageSegmentator {
             this.to = to;
             this.weight = weight;
         }
-
-        @Override
-        public int hashCode() {
-            return from ^ to;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other == null)
-                return false;
-            if (other.getClass() != this.getClass())
-                return false;
-            Edge otherEdge = (Edge)other;
-            return this.from == otherEdge.from && this.to == otherEdge.to ||
-                    this.from == otherEdge.to && this.to == otherEdge.from;
-        }
     }
 
     private int[] inputImage;
@@ -223,5 +159,4 @@ public class TreeSegmentator implements ImageSegmentator {
     private int height;
     private int minSize;
     private ArrayList<Edge> graph;
-    private TreeSet<Integer>[] tree;
 }
