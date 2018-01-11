@@ -136,7 +136,7 @@ public class TreeSegmentator implements ImageSegmentator {
 
     private BufferedImage getImage(int[] colorArray, boolean alpha) {
         BufferedImage result = new BufferedImage(width, height, alpha ? TYPE_INT_ARGB : TYPE_INT_RGB);
-        result.setRGB(0, 0, width, height, colorArray, 0, height);
+        result.setRGB(0, 0, width, height, colorArray, 0, width);
         return result;
     }
 

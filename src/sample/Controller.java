@@ -55,7 +55,7 @@ public class Controller {
         if (!check())
             return;
 
-        ImageSegmentator segmentator = new TreeSegmentator();
+        ImageSegmentator segmentator = new KMeansSegmentator();
 
         Platform.runLater(new Runnable() {
             @Override
